@@ -1,8 +1,14 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include <time.h>
+#ifdef ESP8266
+#endif
+#include "CronAlarms.h"
 
-#define TOPIC_SUBSCRIBE "MiddleFog/#"
-#define TOPIC_PUBLISH "MiddleFog"
+CronId id;
+
+#define TOPIC_SUBSCRIBE "MiddlewareFog/edge/#"
+#define TOPIC_PUBLISH "MiddlewareFog/edge/device"
 #define ID_MQTT "MiddleFog"
 
 const char *SSID = "SSID";
@@ -26,6 +32,9 @@ void setup()
     initSerial();
     initWiFi();
     initMQTT();
+
+    // create timers, to trigger relative to when they're created
+    Cron.create("*/1800 * * * * *", sendStatusOutputMQTT, false); // timer for every 30 minutes
 }
 
 void initSerial()
@@ -112,14 +121,18 @@ void checkConnectionsWifiMQTT(void)
 
 void sendStatusOutputMQTT(void)
 {
-    MQTT.publish(TOPIC_PUBLISH, "FIX DATA");
+    Serial.println("MQTT message cron was triggered");
+    MQTT.publish(TOPIC_PUBLISH, "Edge - Message from MQTT DEVICE");
     Serial.println(TOPIC_PUBLISH);
     delay(2000);
 }
 
 void loop()
 {
+#ifdef __AVR__
+    system_tick(); // must be implemented at 1Hz
+#endif
+    Cron.delay();
     checkConnectionsWifiMQTT();
-    sendStatusOutputMQTT();
     MQTT.loop();
 }
