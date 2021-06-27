@@ -8,7 +8,7 @@
 CronId id;
 
 #define TOPIC_SUBSCRIBE "MiddlewareFog/edge/#"
-#define TOPIC_PUBLISH "MiddlewareFog/edge/device"
+#define TOPIC_PUBLISH "middlewareIN"
 #define ID_MQTT "MiddleFog"
 
 const char *SSID = "SSID";
