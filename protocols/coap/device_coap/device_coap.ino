@@ -3,7 +3,7 @@
 
 coapClient coap;
 const char *ssid = "SSID";
-const char *password = "PASSWARD";
+const char *password = "PASSWORD";
 char *resoureURI = "middleware";
 char *coapMessage = "Edge - Message from COAP DEVICE";
 
