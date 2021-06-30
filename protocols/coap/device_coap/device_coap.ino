@@ -1,16 +1,21 @@
 #include <ESP8266WiFi.h>
+#include <time.h>
+#ifdef ESP8266
+#include <sys/time.h>
+#endif
 #include "coap_client.h"
+#include "CronAlarms.h"
 
 coapClient coap;
-const char *ssid = "SSID";
-const char *password = "PASSWORD";
+const char *ssid = "ssid";
+const char *password = "password";
 char *resoureURI = "middleware";
 char *coapMessage = "Edge - Message from COAP DEVICE";
 
-IPAddress ip("XXX", "XXX", "XXX", "XXX");
+IPAddress ip(192, 168, 43, 73);
 int port = 5683;
+CronId id;
 
-// coap client response callback
 void callback_response(coapPacket &packet, IPAddress ip, int port)
 {
   char packetPayload[packet.payloadlen + 1];
@@ -47,11 +52,23 @@ void setup()
 
   coap.response(callback_response);
   coap.start();
+  Cron.create("*/15 * * * * *", publishMessage, false); // timer for every 15 seconds
+}
+
+void publishMessage()
+{
+  coap.put(ip, port, resoureURI, coapMessage, strlen(coapMessage));
 }
 
 void loop()
 {
+<<<<<<< HEAD
   int msgid = coap.put(ip, port, resoureURI, coapMessage, strlen(coapMessage));
   Serial.println(msgid);
   delay(1000);
 }
+=======
+  Cron.delay();
+  coap.loop();
+}
+>>>>>>> Fix COAP connection issue
