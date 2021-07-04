@@ -22,7 +22,6 @@ void callback_response(coapPacket &packet, IPAddress ip, int port)
   memcpy(packetPayload, packet.payload, packet.payloadlen);
   packetPayload[packet.payloadlen] = NULL;
 
-  //response from coap server
   if (packet.type == 3 && packet.code == 0)
   {
     Serial.println("ping ok");
@@ -33,13 +32,13 @@ void callback_response(coapPacket &packet, IPAddress ip, int port)
 
 void setup()
 {
-
   Serial.begin(115200);
 
   WiFi.begin(ssid, password);
   Serial.println(" ");
   Serial.print("Connecting to ");
   Serial.println(ssid);
+
   while (WiFi.status() != WL_CONNECTED)
   {
     yield();
@@ -52,7 +51,7 @@ void setup()
 
   coap.response(callback_response);
   coap.start();
-  Cron.create("*/15 * * * * *", publishMessage, false); // timer for every 15 seconds
+  Cron.create("*/2 * * * * *", publishMessage, false); // timer for every 2 seconds
 }
 
 void publishMessage()
@@ -62,13 +61,6 @@ void publishMessage()
 
 void loop()
 {
-<<<<<<< HEAD
-  int msgid = coap.put(ip, port, resoureURI, coapMessage, strlen(coapMessage));
-  Serial.println(msgid);
-  delay(1000);
-}
-=======
   Cron.delay();
   coap.loop();
 }
->>>>>>> Fix COAP connection issue
