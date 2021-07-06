@@ -7,13 +7,13 @@
 
 CronId id;
 
-#define TOPIC_SUBSCRIBE "MiddlewareFog/edge/#"
-#define TOPIC_PUBLISH "middlewareIN"
+#define TOPIC_SUBSCRIBE "middlewareToEdge/#"
+#define TOPIC_PUBLISH "middleware"
 #define ID_MQTT "MiddleFog"
 
 const char *SSID = "SSID";
 const char *PASSWORD = "PASSWORD";
-const char *BROKER_MQTT = "test.mosquitto.org";
+const char *BROKER_MQTT = "192.168.43.73";
 int BROKER_PORT = 1883;
 
 WiFiClient espClient;
@@ -33,8 +33,7 @@ void setup()
     initWiFi();
     initMQTT();
 
-    // create timers, to trigger relative to when they're created
-    Cron.create("*/1800 * * * * *", sendStatusOutputMQTT, false); // timer for every 30 minutes
+    Cron.create("*/3 * * * * *", sendStatusOutputMQTT, false); // timer for every 3 seconds
 }
 
 void initSerial()
@@ -122,9 +121,8 @@ void checkConnectionsWifiMQTT(void)
 void sendStatusOutputMQTT(void)
 {
     Serial.println("MQTT message cron was triggered");
-    MQTT.publish(TOPIC_PUBLISH, "Edge - Message from MQTT DEVICE");
+    MQTT.publish(TOPIC_PUBLISH, "vkassalfwdhvpysyesjqelrsafcpnrtotrbllmc");
     Serial.println(TOPIC_PUBLISH);
-    delay(2000);
 }
 
 void loop()
